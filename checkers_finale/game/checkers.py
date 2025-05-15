@@ -201,11 +201,11 @@ def capture(pos, pos_new, pieces, locations):
     step_x = dx // abs(pos_new[0] - pos[0]) if pos_new[0] != pos[0] else 0
     step_y = dy // abs(pos_new[1] - pos[1]) if pos_new[1] != pos[1] else 0
 
-    curr_x, curr_y = pos
-    while (curr_x, curr_y) != pos_new: #проходится между начальной и конечной позициями фигуры и проверяет, нет ли этих локаций в массиве локаций
-        curr_x += step_x
-        curr_y += step_y
-        captured_pos = (curr_x, curr_y)
+    pos_x, pos_y = pos
+    while (pos_x, pos_y) != pos_new: #проходится между начальной и конечной позициями фигуры и проверяет, нет ли этих локаций в массиве локаций
+        pos_x += step_x
+        pos_y += step_y
+        captured_pos = (pos_x, pos_y)
         if captured_pos in locations:
             index = locations.index(captured_pos)
             locations.pop(index)
@@ -236,7 +236,7 @@ def check_free_pieces(colour):
     for i in range(len(own_pieces)):
         f1 = 0
         for dx, dy in capture_directions:
-            nx, ny = own_locations[i][0] + dx, own_locations[i][1] + dy
+            new_x, new_y = own_locations[i][0] + dx, own_locations[i][1] + dy
             jump_x, jump_y = own_locations[i][0] + 2 * dx, own_locations[i][1] + 2 * dy
             if (0 <= nx < 8 and 0 <= ny < 8 and
                     (nx, ny) in enemy_locations and
@@ -268,16 +268,16 @@ def check_free_locations(colour):
         enemy_locations = white_locations
         own_locations = black_locations
         own_pieces = black_pieces
-    capture_dirs = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+    capture_directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
     f2 = 0
 
     for i in range(len(own_pieces)):
         f1 = 0
-        for dx, dy in capture_dirs:
-            nx, ny = own_locations[i][0] + dx, own_locations[i][1] + dy
+        for dx, dy in capture_directions:
+            new_x, new_y = own_locations[i][0] + dx, own_locations[i][1] + dy
             jump_x, jump_y = own_locations[i][0] + 2 * dx, own_locations[i][1] + 2 * dy
-            if (0 <= nx < 8 and 0 <= ny < 8 and
-                    (nx, ny) in enemy_locations and
+            if (0 <= new_x < 8 and 0 <= new_y < 8 and
+                    (new_x, new_y) in enemy_locations and
                     0 <= jump_x < 8 and 0 <= jump_y < 8 and
                     (jump_x, jump_y) not in own_locations and
                     (jump_x, jump_y) not in enemy_locations):
@@ -378,7 +378,7 @@ def reset():
     curr_piece_type = 0
 
     moves = []
-    
+
     pos = (-1, -1)
     f = 1
     screen.fill((153, 255, 204))
