@@ -18,7 +18,7 @@ How to use this particular code:
 5. Player can surrender by pressing the flag sign.
 
 How to run the code:
-1. The used version of python must be from 3.8 to 3.10.
+1. The used version of python must be from 3.8 to 3.10. The programm contains in the directory checkers_finale.
 2. pip install growler
 3. python app.py
 
