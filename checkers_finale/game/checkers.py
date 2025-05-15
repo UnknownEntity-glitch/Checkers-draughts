@@ -219,7 +219,7 @@ def check_additional_captures(pos, colour, pieces, locations):
     draw_man(moves, pos, colour) if pieces[i] == 1 else draw_king(moves, pos, colour)
     return any(abs(new_pos_x - pos[0]) > 1 for (new_pos_x, new_pos_y) in moves)
 
-#функция формирования нового массива с фигурами, которые можно двигать и выделения их желтым цветом
+#функция формирования нового массива с фигурами, которые можно двигать (шашки, которые могут захватить вражескую фтгуру и дамки/ все фигуры) и выделения их желтым цветом
 def check_free_pieces(colour):
     free_pieces.clear()
     if colour == 'white':
