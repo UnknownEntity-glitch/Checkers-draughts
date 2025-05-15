@@ -17,4 +17,9 @@ How to use this particular code:
 4. The last move can be cancelled or returned if it is needed.
 5. Player can surrender by pressing the flag sign.
 
+How to run the code:
+1. The used version of python must be from 3.8 to 3.10.
+2. pip install growler
+3. python app.py
+
 Enjoy your game, thx for comming!
