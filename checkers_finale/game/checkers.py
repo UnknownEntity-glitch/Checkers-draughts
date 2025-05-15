@@ -20,7 +20,7 @@ mixer.music.load('victory_sound.wav')
 clock = pygame.time.Clock()
 clock.tick(fps)
 
-GameOver = False
+GameOver = False #флаг для конца игры
 turn = 'white' #текущий ход
 prev_turn = 'white' #предыдущий ход
 next_turn = 'white' #следующий ход
@@ -131,31 +131,29 @@ def copy_2(turn):
 def draw_man(moves, pos, colour):
     moves.clear()
     if colour == 'white':
-        normal_dirs = [(1, -1), (-1, -1)]
+        directions = [(1, -1), (-1, -1)]
         enemy_locations = black_locations
         own_locations = white_locations
     else:
-        normal_dirs = [(1, 1), (-1, 1)]
+        directions = [(1, 1), (-1, 1)]
         enemy_locations = white_locations
         own_locations = black_locations
-    capture_dirs = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+    capture_directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
 
-    for dx, dy in capture_dirs:
-        nx, ny = pos[0] + dx, pos[1] + dy
+    for dx, dy in capture_directions: #если найдутся движения захвата, фигура не сможет сходить обычным ходом
+        new_x, new_y = pos[0] + dx, pos[1] + dy
         jump_x, jump_y = pos[0] + 2 * dx, pos[1] + 2 * dy
-        if (0 <= nx < 8 and 0 <= ny < 8 and
-                (nx, ny) in enemy_locations and
-                0 <= jump_x < 8 and 0 <= jump_y < 8 and
-                (jump_x, jump_y) not in own_locations and
+        if (0 <= new_x < 8 and 0 <= new_y < 8 and (new_x, new_y) in enemy_locations and
+                0 <= jump_x < 8 and 0 <= jump_y < 8 and (jump_x, jump_y) not in own_locations and
                 (jump_x, jump_y) not in enemy_locations):
             moves.append((jump_x, jump_y))
     if moves:
         return moves
-    for dx, dy in normal_dirs:
-        nx, ny = pos[0] + dx, pos[1] + dy
-        if 0 <= nx < 8 and 0 <= ny < 8:
-            if (nx, ny) not in own_locations and (nx, ny) not in enemy_locations:
-                moves.append((nx, ny))
+    for dx, dy in directions: #обычный ход (если нет движений захвата)
+        new_x, new_y = pos[0] + dx, pos[1] + dy
+        if 0 <= new_x < 8 and 0 <= new_y < 8:
+            if (new_x, new_y) not in own_locations and (new_x, new_y) not in enemy_locations:
+                moves.append((new_x, new_y))
     return moves
 
 #описание возможных ходов дамки
@@ -175,19 +173,19 @@ def draw_king(moves, pos, colour):
             new_x, new_y = pos[0] + dx * step, pos[1] + dy * step
             if 0 <= new_x <= 7 and 0 <= new_y <= 7:
                 new_pos = (new_x, new_y)
-                if new_pos in own_locations:
+                if new_pos in own_locations: #клетка занята фигурой своего цвета
                     break
-                elif new_pos in enemy_locations:
+                elif new_pos in enemy_locations: #клетка занята фигурой вражеского цвета
                     if f:
                         break
                     f = 1
-                else:
-                    if f:
+                else: #клетка свободна
+                    if f: #т.к. цикл шага от 1 до 8, до этого встретилась фигура вражеского цвета (она будет между начальной и конечной позициями активной фигуры)
                         moves.append(new_pos)
                         break
                     else:
                         moves.append(new_pos)
-            else:
+            else: #выход за пределы поля
                 break
     return moves
 
@@ -204,7 +202,7 @@ def capture(pos, pos_new, pieces, locations):
     step_y = dy // abs(pos_new[1] - pos[1]) if pos_new[1] != pos[1] else 0
 
     curr_x, curr_y = pos
-    while (curr_x, curr_y) != pos_new:
+    while (curr_x, curr_y) != pos_new: #проходится между начальной и конечной позициями фигуры и проверяет, нет ли этих локаций в массиве локаций
         curr_x += step_x
         curr_y += step_y
         captured_pos = (curr_x, curr_y)
@@ -232,12 +230,12 @@ def check_free_pieces(colour):
         enemy_locations = white_locations
         own_locations = black_locations
         own_pieces = black_pieces
-    capture_dirs = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
+    capture_directions = [(1, 1), (1, -1), (-1, 1), (-1, -1)]
     f2 = 0
 
     for i in range(len(own_pieces)):
         f1 = 0
-        for dx, dy in capture_dirs:
+        for dx, dy in capture_directions:
             nx, ny = own_locations[i][0] + dx, own_locations[i][1] + dy
             jump_x, jump_y = own_locations[i][0] + 2 * dx, own_locations[i][1] + 2 * dy
             if (0 <= nx < 8 and 0 <= ny < 8 and
@@ -347,23 +345,30 @@ def reset():
     global moves, pos, f
 
     black_pieces = [1] * 12
+
     black_locations = [(1, 0), (3, 0), (5, 0), (7, 0),
                        (0, 1), (2, 1), (4, 1), (6, 1),
                        (1, 2), (3, 2), (5, 2), (7, 2)]
+
     white_pieces = [1] * 12
+
     white_locations = [(0, 5), (2, 5), (4, 5), (6, 5),
                        (1, 6), (3, 6), (5, 6), (7, 6),
                        (0, 7), (2, 7), (4, 7), (6, 7)]
+
     prev_black_pieces = []
     prev_black_locations = []
     prev_white_pieces = []
     prev_white_locations = []
+
     next_black_pieces = []
     next_black_locations = []
     next_white_pieces = []
     next_white_locations = []
+
     free_pieces = []
     free_locations = []
+
     GameOver = False
     turn = 'white'
     prev_turn = 'white'
@@ -371,7 +376,9 @@ def reset():
     curr_piece_1 = [-1, -1]
     curr_piece_2 = [-1, -1]
     curr_piece_type = 0
+
     moves = []
+    
     pos = (-1, -1)
     f = 1
     screen.fill((153, 255, 204))
