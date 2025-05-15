@@ -20,6 +20,6 @@ How to use this particular code:
 How to run the code:
 1. The used version of python must be from 3.8 to 3.10. The programm contains in the directory checkers_finale.
 2. pip install growler
-3. python app.py
+3. python checkers.py
 
 Enjoy your game, thx for comming!
